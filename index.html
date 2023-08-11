@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html>
 <head>
   <title>Простая рисовалка с карандашом и кнопкой "Сохранить" (p5.js)</title>
@@ -33,6 +33,70 @@
       drawing = true;
       prevX = mouseX;
       prevY = mouseY;
+    }
+
+    function mouseReleased() {
+      drawing = false;
+    }
+
+    function saveDrawing() {
+      saveCanvas('my_drawing', 'png');
+    }
+  </script>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Простая рисовалка с карандашом и кнопкой "Сохранить" (p5.js)</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+</head>
+<body>
+  <button id="saveButton">Сохранить</button>
+  <script>
+    let drawing = false;
+    let prevX, prevY;
+    let strokeWidth = 10; // Увеличил толщину для сенсорных устройств
+
+    function setup() {
+      createCanvas(windowWidth, windowHeight);
+      background(255);
+
+      const saveButton = document.getElementById('saveButton');
+      saveButton.addEventListener('click', saveDrawing);
+
+      // Добавим обработчики для сенсорных событий
+      touchStarted = mousePressed;
+      touchMoved = mouseDragged;
+      touchEnded = mouseReleased;
+    }
+
+    function draw() {
+      if (drawing) {
+        stroke(0);
+        strokeWeight(strokeWidth);
+        line(prevX, prevY, mouseX, mouseY);
+        prevX = mouseX;
+        prevY = mouseY;
+      }
+    }
+
+    function mousePressed() {
+      drawing = true;
+      prevX = mouseX;
+      prevY = mouseY;
+      return false; // Предотвращаем перетаскивание страницы на мобильных устройствах
+    }
+
+    function mouseDragged() {
+      if (drawing) {
+        line(prevX, prevY, mouseX, mouseY);
+        prevX = mouseX;
+        prevY = mouseY;
+      }
+      return false;
     }
 
     function mouseReleased() {
