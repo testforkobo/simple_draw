@@ -1,5 +1,3 @@
-<!-- ТРЕТЬЯ ВЕРСИЯ
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -31,14 +29,14 @@
         stroke(0);
         strokeWeight(strokeWidth);
 
-        // Используем lerp() для добавления промежуточных точек
-        let currentX = lerp(prevX, mouseX, 0.5);
-        let currentY = lerp(prevY, mouseY, 0.5);
+        // Используем сглаживание Безье
+        let controlX = (prevX + mouseX) / 2;
+        let controlY = (prevY + mouseY) / 2;
 
-        line(prevX, prevY, currentX, currentY);
+        bezier(prevX, prevY, controlX, controlY, controlX, controlY, mouseX, mouseY);
 
-        prevX = currentX;
-        prevY = currentY;
+        prevX = mouseX;
+        prevY = mouseY;
       }
     }
 
@@ -51,102 +49,13 @@
 
     function mouseDragged() {
       if (drawing) {
-        let currentX = lerp(prevX, mouseX, 0.5);
-        let currentY = lerp(prevY, mouseY, 0.5);
+        let controlX = (prevX + mouseX) / 2;
+        let controlY = (prevY + mouseY) / 2;
 
-        line(prevX, prevY, currentX, currentY);
+        bezier(prevX, prevY, controlX, controlY, controlX, controlY, mouseX, mouseY);
 
-        prevX = currentX;
-        prevY = currentY;
-      }
-      return false;
-    }
-
-    function mouseReleased() {
-      drawing = false;
-    }
-
-    function saveDrawing() {
-      saveCanvas('my_drawing', 'png');
-    }
-  </script>
-</body>
-</html>
-
- -->
-
-
- <!-- ПЯТАЯ ВЕРСИЯ -->
-
- <!DOCTYPE html>
-<html>
-<head>
-  <title>Простая рисовалка с карандашом и кнопкой "Сохранить" (p5.js)</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
-</head>
-<body>
-  <button id="saveButton">Сохранить</button>
-  <script>
-    let drawing = false;
-    let points = [];
-    let strokeWidth = 10;
-
-    function setup() {
-      createCanvas(windowWidth, windowHeight);
-      background(255);
-
-      const saveButton = document.getElementById('saveButton');
-      saveButton.addEventListener('click', saveDrawing);
-
-      touchStarted = mousePressed;
-      touchMoved = mouseDragged;
-      touchEnded = mouseReleased;
-    }
-
-    function draw() {
-      if (drawing) {
-        stroke(0);
-        strokeWeight(strokeWidth);
-
-        points.push(createVector(mouseX, mouseY));
-
-        if (points.length > 3) {
-          for (let i = 1; i < points.length - 2; i++) {
-            let x0 = points[i - 1].x;
-            let y0 = points[i - 1].y;
-            let x1 = points[i].x;
-            let y1 = points[i].y;
-            let x2 = points[i + 1].x;
-            let y2 = points[i + 1].y;
-            let x3 = points[i + 2].x;
-            let y3 = points[i + 2].y;
-
-            for (let t = 0; t <= 1; t += 0.05) {
-              let cX = 0.5 * (2 * x1 + (x2 - x0) * t + (2 * x0 - 5 * x1 + 4 * x2 - x3) * t * t + (3 * x1 - x0 - 3 * x2 + x3) * t * t * t);
-              let cY = 0.5 * (2 * y1 + (y2 - y0) * t + (2 * y0 - 5 * y1 + 4 * y2 - y3) * t * t + (3 * y1 - y0 - 3 * y2 + y3) * t * t * t);
-              line(points[i - 1].x, points[i - 1].y, cX, cY);
-            }
-          }
-        }
-      }
-    }
-
-    function mousePressed() {
-      drawing = true;
-      points = [];
-      return false;
-    }
-
-    function mouseDragged() {
-      if (drawing) {
-        let currentX = lerp(prevX, mouseX, 0.5);
-        let currentY = lerp(prevY, mouseY, 0.5);
-
-        line(prevX, prevY, currentX, currentY);
-
-        prevX = currentX;
-        prevY = currentY;
+        prevX = mouseX;
+        prevY = mouseY;
       }
       return false;
     }
